@@ -1,0 +1,4 @@
+export enum SERVICES {
+  USER_ACCOUNT = 'USER_ACCOUNT',
+  MOVIES = "MOVIES"
+}
