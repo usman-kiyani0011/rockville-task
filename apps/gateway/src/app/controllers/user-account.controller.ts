@@ -62,13 +62,13 @@ export class UserAccountController {
   @Put(API_ENDPOINTS.USER_ACCOUNT.CHANGE_PASSWORD)
   async changePassword(
     @Body() payload: ChangePasswordRequestDto,
-    @Req() { user: { _id } }
+    @Req() { user }
   ): Promise<any> {
     try {
       const response = await firstValueFrom(
         this.userAccountServiceClient.send(CHANGE_PASSWORD, {
           ...payload,
-          userId: _id,
+          userId: user?._id,
         })
       );
       return response;
@@ -89,13 +89,13 @@ export class UserAccountController {
   @Patch(API_ENDPOINTS.PROFILE.UPDATE)
   async updateProfile(
     @Body() payload: UpdateProfileRequestDto,
-    @Req() { user: { _id } }
+    @Req() { user }
   ): Promise<any> {
     try {
       const response = await firstValueFrom(
         this.userAccountServiceClient.send(UPDATE_PROFILE, {
           ...payload,
-          _id,
+          id: user?._id,
         })
       );
       return response;

@@ -48,9 +48,10 @@ export class UserService {
     try {
       const user = await this.validateUser(email, password);
       if (!user) throw new UnauthorizedException('Invalid Credentials');
-      const encode = { username: user.email, sub: user._id };
+      const encode = { email: user?.email, sub: user?._id };
+
       return {
-        user: user['_doc'],
+        user: user,
         accessToken: this.jwtService.sign(encode, {
           secret: process.env.JWT_SECRET,
         }),
@@ -62,8 +63,8 @@ export class UserService {
   async validateUser(username: string, password: string) {
     const user = await this.userRepository.findOne({ email: username });
     if (user && (await bcrypt.compare(password, user.password))) {
-      const { password, ...rest } = user;
-      return rest;
+      const { password, ...restObject } = user;
+      return restObject;
     }
     return null;
   }
@@ -84,14 +85,17 @@ export class UserService {
   }
   async verifyToken({ token }) {
     try {
-      const decoded = this.jwtService.decode(token);
-      if (!decoded || !decoded?.sub)
-        throw new UnauthorizedException('Invalid Token');
-      const user = await this.userRepository.findOne({
-        email: decoded?.username,
+      const verifiedPayload = await this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
       });
-      const { password, ...result } = user;
-      return result;
+      if (!verifiedPayload || !verifiedPayload?.sub) {
+        throw new UnauthorizedException('Invalid Token');
+      }
+      const user = await this.userRepository.findOne({
+        email: verifiedPayload?.email,
+      });
+      const { password, ...restObject } = user;
+      return restObject;
     } catch (err) {
       throw new RpcException(err);
     }
@@ -104,33 +108,7 @@ export class UserService {
       throw new RpcException(error);
     }
   }
-  async findByEmail(email: string) {
-    try {
-      const user = await this.userRepository.findOne({ email });
-      if (!user)
-        throw new BadRequestException('User with this email not found');
-      return user;
-    } catch (error) {
-      throw new RpcException(error);
-    }
-  }
-  async findOne(payload: any) {
-    try {
-      const user = await this.userRepository.findOne(payload);
-      return user;
-    } catch (error) {
-      throw new RpcException(error);
-    }
-  }
-  async findById(id: string) {
-    try {
-      const user = await this.userRepository.findOne({ _id: id });
-      if (!user) throw new Error('User not found');
-      return user;
-    } catch (error) {
-      throw new RpcException(error);
-    }
-  }
+  
   async updateUser(id: string, payload: UpdateProfileRequestDto) {
     try {
       return this.userRepository.findByIdAndUpdate(

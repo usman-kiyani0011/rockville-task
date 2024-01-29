@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsAlpha,
   IsArray,
   IsEmail,
   IsISO8601,
@@ -13,50 +12,38 @@ import {
 } from 'class-validator';
 
 export class SignUpRequestDto {
-  @ApiProperty({ example: 'test@yopmail.com' })
+  @ApiProperty({ example: 'dummy@yopmail.com' })
   @IsEmail()
   @IsNotEmpty()
   email: string;
-  @ApiProperty({ example: 'test user' })
+
+  @ApiProperty({ example: 'dummy user' })
   @IsString()
   @IsNotEmpty()
   name: string;
+
   @ApiProperty({ example: 'Test111@' })
   @IsStrongPassword()
   @IsNotEmpty()
   password: string;
-  @ApiProperty({ example: '1997-12-12', required: false })
+
+  @ApiProperty({ example: '1990-12-12', required: false })
   @IsISO8601()
   @IsOptional()
   dob: string;
-  @ApiProperty({ example: 'Test Address', required: false })
+
+  @ApiProperty({ example: 'dummy address', required: false })
   @IsString()
   @IsOptional()
   address: string;
-  @ApiProperty({
-    example: 'https://picsum.photos/200/300?random=1',
-    required: false,
-  })
-  @IsUrl()
-  @IsOptional()
-  profileURL: string;
 
-  @ApiProperty({
-    description: 'categories Ids',
-    default: [],
-    isArray: true,
-    required: false,
-  })
-  @IsArray()
-  @IsMongoId({ each: true })
-  @IsOptional()
-  categories: string[];
 }
 export class SignInRequestDto {
-  @ApiProperty({ example: 'test@yopmail.com' })
+  @ApiProperty({ example: 'dummy@yopmail.com' })
   @IsEmail()
   @IsNotEmpty()
   email: string;
+
   @ApiProperty({ example: 'Test111@' })
   @IsStrongPassword()
   @IsNotEmpty()
@@ -69,17 +56,17 @@ export class UpdateProfileRequestDto {
   @IsOptional()
   name?: string;
 
-  @ApiProperty({ example: '1997-12-12', required: false })
+  @ApiProperty({ example: '1990-12-12', required: false })
   @IsISO8601()
   @IsOptional()
   dob?: string;
 
-  @ApiProperty({ example: 'Test Address', required: false })
+  @ApiProperty({ example: 'dummy Address', required: false })
   @IsString()
   @IsOptional()
   address?: string;
   @ApiProperty({
-    example: 'https://picsum.photos/200/300?random=1',
+    example: 'https://picsum.photos/200/300',
     required: false,
   })
   @IsUrl()
@@ -106,6 +93,7 @@ export class ChangePasswordRequestDto {
   @IsStrongPassword()
   @IsNotEmpty()
   password: string;
+  
   @ApiProperty({ example: 'Test123@' })
   @IsStrongPassword()
   @IsNotEmpty()

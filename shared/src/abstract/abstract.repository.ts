@@ -46,8 +46,9 @@ export abstract class AbstractRepository<TDocument extends AbstractSchema> {
     }
     this.singleName += `${this.friendlyName
       .slice(1, end)
-      .replace(/([A-Z]+)*([A-Z][a-z])/g, '$1 $2')}${end == -3 ? 'y' : ''
-      }`.toLowerCase();
+      .replace(/([A-Z]+)*([A-Z][a-z])/g, '$1 $2')}${
+      end == -3 ? 'y' : ''
+    }`.toLowerCase();
   }
 
   async create(document: TDocument, options?: SaveOptions): Promise<TDocument> {
@@ -140,7 +141,7 @@ export abstract class AbstractRepository<TDocument extends AbstractSchema> {
         throw new NotFoundException(`${this.singleName} not found.`);
       }
       return deletedDocument as any;
-    } catch (err:any) {
+    } catch (err: any) {
       if (err instanceof NotFoundException) {
         throw err;
       }
@@ -153,7 +154,7 @@ export abstract class AbstractRepository<TDocument extends AbstractSchema> {
   async findOneAndDelete(
     filterQuery: FilterQuery<TDocument>
   ): Promise<TDocument> {
-    const document = await this.model.findOneAndDelete(filterQuery, {});
+    const document = await this.model.findOneAndDelete(filterQuery, {}).exec();
     if (!document) {
       this.logger.warn(
         `${this.singleName} not found with filterQuery`,
@@ -172,12 +173,14 @@ export abstract class AbstractRepository<TDocument extends AbstractSchema> {
     }
   ): Promise<TDocument> {
     const { notFoundThrowError, ...remainingOptions } = options;
-    const document = await Promise.resolve(
-      this.model.findOne(
-        filterQuery,
-        projection || {},
-        remainingOptions || { lean: true }
-      )
+    const document:any = await Promise.resolve(
+      this.model
+        .findOne(
+          filterQuery,
+          projection || {},
+          remainingOptions || { lean: true }
+        )
+        .lean()
     );
     if (!document && notFoundThrowError) {
       this.logger.warn(
