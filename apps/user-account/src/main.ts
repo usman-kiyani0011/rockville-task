@@ -1,7 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { SERVICES } from '@shared/constants';
+import { SERVICES } from '@shared';
 
 import { UserAccountModule } from './app/user-account.module';
 

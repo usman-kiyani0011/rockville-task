@@ -1,1 +1,4 @@
-export const API_TAGS={}
+export const API_TAGS={
+  USER_ACCOUNT: 'User Account',
+
+}
