@@ -1,8 +1,26 @@
 export const RMQ_MESSAGES = {
   USER_ACCOUNT: {
-    TEST: 'user-account-test',
+    AUTH: {
+      SIGNUP: 'auth-signup',
+      SIGNIN: 'auth-signin',
+      LOGOUT: 'auth-logout',
+      CHANGE_PASSWORD: 'auth-change-password',
+      VERIFY_TOKEN: 'auth-verify-token',
+    },
+    PROFILE: {
+      GET_PROFILE: 'profile-get-profile',
+      UPDATE_PROFILE: 'profile-update-profile',
+    },
+  },
+  CATEGORY: {
+    LIST: 'category-list',
+    SEEDS: 'category-seeds',
   },
   MOVIES: {
-    TEST: 'test',
+    LIST: 'movies-list',
+    RECOMMENDED: 'movies-recommended',
+    ADD_RATINGS: 'movies-add-rating',
+    SEED: 'movies-seeds',
+    DETAIL: 'movie-details',
   },
 };

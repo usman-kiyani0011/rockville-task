@@ -4,6 +4,10 @@ import { MoviesController } from './controllers/movies.contoller';
 import { UserAccountController } from './controllers/user-account.controller';
 import { SERVICES, SharedModule } from '@shared';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { ExceptionsFilter } from './filters';
+import { AuthGuard } from './guards/auth.guard';
+import { ResponseInterceptor } from './interceptors';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -14,6 +18,9 @@ import { ClientProxyFactory, Transport } from '@nestjs/microservices';
     UserAccountController
   ],
   providers: [
+    { provide: APP_GUARD, useClass: AuthGuard },
+    { provide: APP_FILTER, useClass: ExceptionsFilter },
+    { provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },
     ...Object.values(SERVICES).map((SERVICE_NAME) => {
       return {
         provide: SERVICE_NAME,

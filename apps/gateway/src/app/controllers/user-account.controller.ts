@@ -23,7 +23,7 @@ export class UserAccountController {
   public async getContracts(): Promise<any> {
     try {
       const response = await firstValueFrom(
-        this.userAccountServiceClient.send(RMQ_MESSAGES.USER_ACCOUNT.TEST, {})
+        this.userAccountServiceClient.send('test', {})
       );
       return response;
     } catch (err) {

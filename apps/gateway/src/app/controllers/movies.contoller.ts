@@ -23,7 +23,7 @@ export class MoviesController {
   public async getContracts(): Promise<any> {
     try {
       const response = await firstValueFrom(
-        this.moviesServiceClient.send(RMQ_MESSAGES.MOVIES.TEST, {})
+        this.moviesServiceClient.send('test', {})
       );
       return response;
     } catch (err) {
