@@ -1,8 +1,15 @@
 import { Controller, Get } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { AddRatingRequestDto, MovieListRequestDto, RMQ_MESSAGES } from '@shared';
+import {
+  AddRatingRequestDto,
+  MovieListRequestDto,
+  RMQ_MESSAGES,
+} from '@shared';
 import { MovieService } from '../services/movies.service';
-const { LIST, RECOMMENDED, ADD_RATINGS, SEED } = RMQ_MESSAGES.MOVIES;
+const {
+  MOVIES: { LIST, RECOMMENDED, ADD_RATINGS, SEED },
+  CATEGORY: { CATEGORY_LIST, CATEGORY_SEEDS },
+} = RMQ_MESSAGES;
 
 @Controller()
 export class MoviesController {
@@ -28,11 +35,11 @@ export class MoviesController {
     return this.movieService.addRating(payload);
   }
 
-  @MessagePattern(LIST)
+  @MessagePattern(CATEGORY_LIST)
   getCategories() {
     return this.movieService.fetchCategories();
   }
-  @MessagePattern(SEED)
+  @MessagePattern(CATEGORY_SEEDS)
   seedCategories() {
     return this.movieService.seedCategories();
   }

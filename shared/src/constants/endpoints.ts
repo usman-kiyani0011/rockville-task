@@ -4,7 +4,7 @@ export const API_ENDPOINTS = {
     SIGN_IN: 'signin',
     CHANGE_PASSWORD: 'change-password',
   },
-  PROFILE:{
+  PROFILE: {
     GET: 'profile',
     UPDATE: 'update-profile',
   },
@@ -14,5 +14,9 @@ export const API_ENDPOINTS = {
     ADD_RATING: 'add-rating',
     SEED: 'seeds',
     DETAIL: 'movie-details',
+  },
+  CATEGORY: {
+    SEEDS: 'seeds',
+    LIST: 'list',
   },
 };

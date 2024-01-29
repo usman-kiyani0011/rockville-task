@@ -20,7 +20,10 @@ import {
 } from '@shared';
 import { Auth } from '../decorators/auth.decorator';
 import { firstValueFrom } from 'rxjs';
-const { LIST, RECOMMENDED, ADD_RATINGS, SEED } = RMQ_MESSAGES.MOVIES;
+const {
+  MOVIES: { LIST, RECOMMENDED, ADD_RATINGS, SEED },
+  CATEGORY: { CATEGORY_LIST, CATEGORY_SEEDS },
+} = RMQ_MESSAGES;
 @Controller(CONTROLLERS.MOVIES)
 @ApiTags(API_TAGS.MOVIES)
 export class MoviesController {
@@ -85,5 +88,15 @@ export class MoviesController {
     } catch (error) {
       throw new RpcException(error);
     }
+  }
+  @Post(API_ENDPOINTS.CATEGORY.SEEDS)
+  @Auth(true)
+  async seedCategoryData() {
+    return this.movieServiceClient.send(CATEGORY_SEEDS, {});
+  }
+  @Get(API_ENDPOINTS.CATEGORY.LIST)
+  @Auth(true)
+  async listCategories() {
+    return this.movieServiceClient.send(CATEGORY_LIST, {});
   }
 }

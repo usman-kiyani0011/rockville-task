@@ -13,8 +13,8 @@ export const RMQ_MESSAGES = {
     },
   },
   CATEGORY: {
-    LIST: 'category-list',
-    SEEDS: 'category-seeds',
+    CATEGORY_LIST: 'category-list',
+    CATEGORY_SEEDS: 'category-seeds',
   },
   MOVIES: {
     LIST: 'movies-list',
