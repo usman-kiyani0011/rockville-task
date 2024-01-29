@@ -1,33 +1,89 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Inject,
+  Post,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { ApiTags } from '@nestjs/swagger';
-import { RMQ_MESSAGES, SERVICES } from '@shared';
+import {
+  API_ENDPOINTS,
+  API_TAGS,
+  AddRatingRequestDto,
+  CONTROLLERS,
+  MovieListRequestDto,
+  RMQ_MESSAGES,
+  SERVICES,
+} from '@shared';
+import { Auth } from '../decorators/auth.decorator';
 import { firstValueFrom } from 'rxjs';
-@Controller('movies')
-@ApiTags('Movies')
+const { LIST, RECOMMENDED, ADD_RATINGS, SEED } = RMQ_MESSAGES.MOVIES;
+@Controller(CONTROLLERS.MOVIES)
+@ApiTags(API_TAGS.MOVIES)
 export class MoviesController {
   constructor(
-    @Inject(SERVICES.MOVIES) private readonly moviesServiceClient: ClientProxy
+    @Inject(SERVICES.MOVIES) private readonly movieServiceClient: ClientProxy
   ) {}
 
-  @Get()
-  getData() {
-    return {
-      success: 'success',
-    };
-  }
-
-  // @Auth(true)
-  @Get('API_ENDPOINTS.AIR_SERVICES.CONTRACT.GET_CONTRACTS')
-  // @ApiOkResponse({ type: GetContractsResponseDto })
-  public async getContracts(): Promise<any> {
+  @Post(API_ENDPOINTS.MOVIES.SEED)
+  @Auth(true)
+  async seedMovieData() {
     try {
       const response = await firstValueFrom(
-        this.moviesServiceClient.send('test', {})
+        this.movieServiceClient.send(SEED, {})
       );
       return response;
-    } catch (err) {
-      throw new RpcException(err);
+    } catch (error) {
+      throw new RpcException(error);
+    }
+  }
+
+  @Auth(true)
+  @Get(API_ENDPOINTS.MOVIES.LIST)
+  async listMovies(@Query() { categoryId, search }: MovieListRequestDto) {
+    try {
+      const response = await firstValueFrom(
+        this.movieServiceClient.send(LIST, { categoryId, search })
+      );
+      return response;
+    } catch (error) {
+      throw new RpcException(error);
+    }
+  }
+  @Get(API_ENDPOINTS.MOVIES.RECOMMENDED)
+  @Auth(true)
+  async listRecommendedMovies(@Req() { user: { _id, categories } }) {
+    try {
+      const response = await firstValueFrom(
+        this.movieServiceClient.send(RECOMMENDED, {
+          userId: _id,
+          categories,
+        })
+      );
+      return response;
+    } catch (error) {
+      throw new RpcException(error);
+    }
+  }
+  @Post(API_ENDPOINTS.MOVIES.ADD_RATING)
+  @Auth(true)
+  async addRating(
+    @Body() payload: AddRatingRequestDto,
+    @Req() { user: { _id } }
+  ) {
+    try {
+      const response = await firstValueFrom(
+        this.movieServiceClient.send(ADD_RATINGS, {
+          ...payload,
+          userId: _id,
+        })
+      );
+      return response;
+    } catch (error) {
+      throw new RpcException(error);
     }
   }
 }

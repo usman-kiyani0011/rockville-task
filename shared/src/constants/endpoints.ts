@@ -8,4 +8,11 @@ export const API_ENDPOINTS = {
     GET: 'profile',
     UPDATE: 'update-profile',
   },
+  MOVIES: {
+    LIST: 'list',
+    RECOMMENDED: 'recommended',
+    ADD_RATING: 'add-rating',
+    SEED: 'seeds',
+    DETAIL: 'movie-details',
+  },
 };

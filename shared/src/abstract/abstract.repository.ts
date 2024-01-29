@@ -173,7 +173,7 @@ export abstract class AbstractRepository<TDocument extends AbstractSchema> {
     }
   ): Promise<TDocument> {
     const { notFoundThrowError, ...remainingOptions } = options;
-    const document:any = await Promise.resolve(
+    const document: any = await Promise.resolve(
       this.model
         .findOne(
           filterQuery,
@@ -245,11 +245,13 @@ export abstract class AbstractRepository<TDocument extends AbstractSchema> {
     projection?: ProjectionType<TDocument>,
     options?: QueryOptions<TDocument>
   ) {
-    return this.model.find(
-      filterQuery || {},
-      projection || {},
-      options || { lean: true }
-    );
+    return this.model
+      .find(filterQuery || {}, projection || {}, options || { lean: true })
+      .lean();
+  }
+
+  async countDocuments(filterQuery?: FilterQuery<TDocument>) {
+    return await this.model.countDocuments(filterQuery).lean();
   }
 
   async aggregate(pipeline?: PipelineStage[], options?: AggregateOptions) {

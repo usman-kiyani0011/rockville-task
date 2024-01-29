@@ -1,12 +1,30 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { RMQ_MESSAGES } from '@shared';
+import { AddRatingRequestDto, MovieListRequestDto, RMQ_MESSAGES } from '@shared';
+import { MovieService } from '../services/movies.service';
+const { LIST, RECOMMENDED, ADD_RATINGS, SEED } = RMQ_MESSAGES.MOVIES;
+
 @Controller()
 export class MoviesController {
-  constructor() { }
+  constructor(private readonly movieService: MovieService) {}
 
-  @MessagePattern(RMQ_MESSAGES.MOVIES.ADD_RATINGS)
-  getFolders(@Payload() payload: any) {
-    return { success: 'payload' };
+  @MessagePattern(SEED)
+  async seedMovie(@Payload() _payload: {}) {
+    return this.movieService.seedMovies();
+  }
+
+  @MessagePattern(LIST)
+  async listMovies(@Payload() payload: MovieListRequestDto) {
+    return this.movieService.listMovies(payload);
+  }
+  @MessagePattern(RECOMMENDED)
+  async recommendedMovies(
+    @Payload() payload: { userId: string; categories: string[] }
+  ) {
+    return this.movieService.recommendedMovies(payload);
+  }
+  @MessagePattern(ADD_RATINGS)
+  async addRating(@Payload() payload: AddRatingRequestDto) {
+    return this.movieService.addRating(payload);
   }
 }
