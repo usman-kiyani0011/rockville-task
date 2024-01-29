@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  rabitmq:
+    image: rabbitmq:3-management
+    restart: always
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - backend

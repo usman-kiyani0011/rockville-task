@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { SERVICES } from '@shared/constants';
+import { SERVICES } from '@shared';
 import { ValidationPipe } from '@nestjs/common';
 import { MoviesModule } from './app/movies.module';
 

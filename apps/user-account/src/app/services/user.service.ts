@@ -19,7 +19,7 @@ export class UserService {
   constructor(
     private userRepository: UserRepository,
     private jwtService: JwtService
-  ) {}
+  ) { }
 
   async signUp(payload: SignUpRequestDto) {
     const { email, password } = payload;
@@ -48,13 +48,11 @@ export class UserService {
     try {
       const user = await this.validateUser(email, password);
       if (!user) throw new UnauthorizedException('Invalid Credentials');
-      const encode = { email: user?.email, sub: user?._id };
+      const payload = { email: user?.email, sub: user?._id };
 
       return {
         user: user,
-        accessToken: this.jwtService.sign(encode, {
-          secret: process.env.JWT_SECRET,
-        }),
+        accessToken: this.jwtService.sign(payload),
       };
     } catch (error) {
       throw new RpcException(error);
@@ -85,9 +83,7 @@ export class UserService {
   }
   async verifyToken({ token }) {
     try {
-      const verifiedPayload = await this.jwtService.verify(token, {
-        secret: process.env.JWT_SECRET,
-      });
+      const verifiedPayload = await this.jwtService.verify(token);
       if (!verifiedPayload || !verifiedPayload?.sub) {
         throw new UnauthorizedException('Invalid Token');
       }
@@ -108,7 +104,7 @@ export class UserService {
       throw new RpcException(error);
     }
   }
-  
+
   async updateUser(id: string, payload: UpdateProfileRequestDto) {
     try {
       return this.userRepository.findByIdAndUpdate(

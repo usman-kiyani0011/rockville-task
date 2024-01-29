@@ -17,4 +17,4 @@ import { repositories } from './repositories/repository.provider';
   providers: [...repositories],
   exports: [...repositories],
 })
-export class SharedModule {}
+export class SharedModule { }

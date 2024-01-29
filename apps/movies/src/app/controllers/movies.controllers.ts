@@ -3,9 +3,9 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { RMQ_MESSAGES } from '@shared';
 @Controller()
 export class MoviesController {
-  constructor() {}
+  constructor() { }
 
-  @MessagePattern(RMQ_MESSAGES.MOVIES.TEST)
+  @MessagePattern(RMQ_MESSAGES.MOVIES.ADD_RATINGS)
   getFolders(@Payload() payload: any) {
     return { success: 'payload' };
   }

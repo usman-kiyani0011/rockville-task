@@ -9,7 +9,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
   imports: [
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1d' },
+      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN },
     }),
     ConfigModule.forRoot({ envFilePath: '.env' }),
     SharedModule,
@@ -17,4 +17,4 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
   controllers: [UserController],
   providers: [UserService, JwtService],
 })
-export class UserAccountModule {}
+export class UserAccountModule { }
