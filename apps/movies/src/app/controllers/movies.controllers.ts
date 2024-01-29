@@ -27,4 +27,13 @@ export class MoviesController {
   async addRating(@Payload() payload: AddRatingRequestDto) {
     return this.movieService.addRating(payload);
   }
+
+  @MessagePattern(LIST)
+  getCategories() {
+    return this.movieService.fetchCategories();
+  }
+  @MessagePattern(SEED)
+  seedCategories() {
+    return this.movieService.seedCategories();
+  }
 }

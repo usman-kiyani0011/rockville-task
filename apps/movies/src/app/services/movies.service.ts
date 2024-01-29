@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
-import {Types } from 'mongoose';
+import { Types } from 'mongoose';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import {
@@ -167,6 +167,42 @@ export class MovieService {
       throw new RpcException(error);
     }
   }
+  async fetchCategories() {
+    try {
+      return this.categoryRepository.find({}, {}, { sort: { createdAt: -1 } });
+    } catch (error) {
+      throw new RpcException(error);
+    }
+  }
+  async seedCategories() {
+    try {
+      const categories = await this.categoryRepository.countDocuments();
+      if (categories > 10) throw new Error('Already added some data');
+      const { status, data } = await firstValueFrom(
+        this.httpService.get(
+          `${process.env.MOVIES_BASE_URL}?apiKey=${process.env.MOVIES_API_KEY}`
+        )
+      );
+
+      if (status === 200) {
+        const upsert = data.genres.map(({ id, name }) => ({
+          updateOne: {
+            filter: {
+              genreId: id,
+            },
+            update: { $set: { genreId: id, name: name } },
+            upsert: true,
+          },
+        }));
+        // await this.categoryRepository.bulkWrite(upsert);
+        return data.genres;
+      }
+      throw new Error('Error while fetching data from movies API');
+    } catch (error) {
+      throw new RpcException(error?.message ? error.message : error);
+    }
+  }
+
   private calculateAverage(
     oldAverage: number = 0,
     oldCount: number = 0,
