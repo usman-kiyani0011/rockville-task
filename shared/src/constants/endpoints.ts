@@ -1,1 +1,1 @@
-export const END_POINTS={}
+export const API_ENDPOINTS={}

@@ -21,12 +21,6 @@
       "@shared": [
         "shared/src/index.ts"
       ],
-      "@shared/constants": [
-        "shared/src/constants"
-      ],
-      "@shared/repositories": [
-        "shared/src/abstract/repositories"
-      ],
     }
   },
   "exclude": [
