@@ -170,7 +170,7 @@ export class MovieService {
         { name: 'Crime' },
         { name: 'Mystery' },
         { name: 'Adventure' },
-        { name: 'Comedy' },
+        { name: 'Thriller' },
       ];
       return await this.categoryRepository.createMany(categoriesData);
     } catch (error) {
