@@ -8,7 +8,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
   API_ENDPOINTS,
   API_TAGS,
@@ -26,6 +26,7 @@ const {
 } = RMQ_MESSAGES;
 @Controller(CONTROLLERS.MOVIES)
 @ApiTags(API_TAGS.MOVIES)
+@ApiBearerAuth()
 export class MoviesController {
   constructor(
     @Inject(SERVICES.MOVIES) private readonly movieServiceClient: ClientProxy

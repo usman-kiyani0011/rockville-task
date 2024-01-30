@@ -19,7 +19,7 @@ export class UserService {
   constructor(
     private userRepository: UserRepository,
     private jwtService: JwtService
-  ) { }
+  ) {}
 
   async signUp(payload: SignUpRequestDto) {
     const { email, password } = payload;
@@ -47,12 +47,15 @@ export class UserService {
     const { email, password } = payload;
     try {
       const user = await this.validateUser(email, password);
+      console.log('user', user);
       if (!user) throw new UnauthorizedException('Invalid Credentials');
       const payload = { email: user?.email, sub: user?._id };
 
       return {
         user: user,
-        accessToken: this.jwtService.sign(payload),
+        accessToken: this.jwtService.sign(payload,{
+          secret:process.env.JWT_SECRET
+        }),
       };
     } catch (error) {
       throw new RpcException(error);
@@ -83,7 +86,9 @@ export class UserService {
   }
   async verifyToken({ token }) {
     try {
-      const verifiedPayload = await this.jwtService.verify(token);
+      const verifiedPayload = await this.jwtService.verify(token,{
+        secret:process.env.JWT_SECRET
+      });
       if (!verifiedPayload || !verifiedPayload?.sub) {
         throw new UnauthorizedException('Invalid Token');
       }

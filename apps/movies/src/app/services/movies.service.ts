@@ -28,12 +28,13 @@ export class MovieService {
         {
           sort: { createdAt: -1 },
           limit: 5,
+          notFoundThrowError: false 
         }
       );
-      if (!categories.length)
-        throw new Error(
-          'No categories found. Please seed some categories first.'
-        );
+      // if (!categories.length)
+      //   throw new Error(
+      //     'No categories found. Please seed some categories first.'
+      //   );
       const movies = await this.movieRepository.countDocuments({});
       if (movies > 10) throw new Error('Already Added some data');
       const categoriesIds = categories
@@ -41,30 +42,37 @@ export class MovieService {
           return genreId;
         })
         .join('|');
-      const { status, data } = await firstValueFrom(
+
+      const { data } = await firstValueFrom(
         this.httpService.get(
-          `${process.env.MOVIES_BASE_URL}?apiKey=${process.env.MOVIES_API_KEY}page=1`
+          // `${process.env.MOVIES_BASE_URL}?apiKey=${process.env.MOVIES_API_KEY}page=1`
+          // 'http://www.omdbapi.com/?apiKey=d156b98&page=1'
+          `${process.env.MOVIES_BASE_URL}/?apiKey=${process.env.MOVIES_API_KEY}&s=harry&type=movie`
         )
       );
-
-      if (status === 200) {
-        const moviesList = data.results.map((movie) => {
-          const categoryId = categories.find(({ genreId }) =>
-            movie.genre_ids.includes(genreId)
-          )?._id;
-          return {
-            name: movie.title,
-            categoryId,
-            poster: movie.poster_path
-              ? 'https://image.tmdb.org/t/p/w500' + movie.poster_path
-              : null,
-            description: movie.overview,
-          };
-        });
-        const insert = await this.movieRepository.createMany(moviesList);
-        return moviesList;
+      if (data?.Response === 'True') {
+        return data;
       }
       throw new Error('Error while fetching data from movies API');
+
+      // if (status === 200) {
+      //   const moviesList = data.results.map((movie) => {
+      //     const categoryId = categories.find(({ genreId }) =>
+      //       movie.genre_ids.includes(genreId)
+      //     )?._id;
+      //     return {
+      //       name: movie.title,
+      //       categoryId,
+      //       poster: movie.poster_path
+      //         ? 'https://image.tmdb.org/t/p/w500' + movie.poster_path
+      //         : null,
+      //       description: movie.overview,
+      //     };
+      //   });
+      //   const insert = await this.movieRepository.createMany(moviesList);
+      //   return moviesList;
+      // }
+      // throw new Error('Error while fetching data from movies API');
     } catch (error) {
       throw new RpcException(error?.message ? error.message : error);
     }
