@@ -22,7 +22,7 @@ import {
   UpdateProfileRequestDto,
 } from '@shared';
 import { firstValueFrom } from 'rxjs';
-import { Auth } from '../decorators/auth.decorator';
+import { Auth } from '../../decorators/auth.decorator';
 const {
   AUTH: { SIGNUP, SIGNIN, CHANGE_PASSWORD },
   PROFILE: { UPDATE_PROFILE },

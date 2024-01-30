@@ -1,5 +1,5 @@
 export const API_TAGS={
   USER_ACCOUNT: 'User Account',
-  MOVIES:"movies"
+  MOVIES:"Movies"
 
 }

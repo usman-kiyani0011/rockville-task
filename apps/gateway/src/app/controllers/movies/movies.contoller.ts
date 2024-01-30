@@ -18,7 +18,7 @@ import {
   RMQ_MESSAGES,
   SERVICES,
 } from '@shared';
-import { Auth } from '../decorators/auth.decorator';
+import { Auth } from '../../decorators/auth.decorator';
 import { firstValueFrom } from 'rxjs';
 const {
   MOVIES: { LIST, RECOMMENDED, ADD_RATINGS, SEED },
