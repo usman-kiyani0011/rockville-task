@@ -1,4 +1,4 @@
 export const CONTROLLERS = {
-  USER_ACCOUNT: 'userAccount',
-  MOVIES:"movies"
+  USER_ACCOUNT: 'user',
+  MOVIES: 'movies',
 };

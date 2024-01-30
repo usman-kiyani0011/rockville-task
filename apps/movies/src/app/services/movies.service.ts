@@ -28,7 +28,6 @@ export class MovieService {
         {},
         {
           sort: { createdAt: -1 },
-          limit: 5,
           notFoundThrowError: false,
         }
       );
@@ -59,8 +58,8 @@ export class MovieService {
     }
   }
   async listMovies(payload: MovieListRequestDto) {
-    const { categoryId, search } = payload;
     try {
+      const { categoryId, search } = payload;
       let filterQuery = {
         ...(categoryId && { categoryId }),
       };
