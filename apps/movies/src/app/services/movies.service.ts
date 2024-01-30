@@ -43,36 +43,41 @@ export class MovieService {
         })
         .join('|');
 
-      const { data } = await firstValueFrom(
+      // const { data } = await firstValueFrom(
+      //   this.httpService.get(
+      //     // `${process.env.MOVIES_BASE_URL}?apiKey=${process.env.MOVIES_API_KEY}page=1`
+      //     // 'http://www.omdbapi.com/?apiKey=d156b98&page=1'
+      //     `${process.env.MOVIES_BASE_URL}/?apiKey=${process.env.MOVIES_API_KEY}&s=harry&type=movie`
+      //   )
+      // );
+      // if (data?.Response === 'True') {
+      //   return data;
+      // }
+      const { status, data } = await firstValueFrom(
         this.httpService.get(
-          // `${process.env.MOVIES_BASE_URL}?apiKey=${process.env.MOVIES_API_KEY}page=1`
-          // 'http://www.omdbapi.com/?apiKey=d156b98&page=1'
-          `${process.env.MOVIES_BASE_URL}/?apiKey=${process.env.MOVIES_API_KEY}&s=harry&type=movie`
+            `https://api.themoviedb.org/3/discover/movie?with_genres=${categoriesIds}&api_key=5c95c30ba021b6e8b46fbd82e23a346a&with_origin_country=US&page=1`
         )
       );
-      if (data?.Response === 'True') {
+      // throw new Error('Error while fetching data from movies API');
+
+      if (status === 200) {
+        const moviesList = data.results.map((movie) => {
+          const categoryId = categories.find(({ genreId }) =>
+            movie.genre_ids.includes(genreId)
+          )?._id;
+          return {
+            name: movie.title,
+            categoryId,
+            poster: movie.poster_path
+              ? 'https://image.tmdb.org/t/p/w500' + movie.poster_path
+              : null,
+            description: movie.overview,
+          };
+        });
+        // const insert = await this.movieRepository.createMany(moviesList);
         return data;
       }
       throw new Error('Error while fetching data from movies API');
-
-      // if (status === 200) {
-      //   const moviesList = data.results.map((movie) => {
-      //     const categoryId = categories.find(({ genreId }) =>
-      //       movie.genre_ids.includes(genreId)
-      //     )?._id;
-      //     return {
-      //       name: movie.title,
-      //       categoryId,
-      //       poster: movie.poster_path
-      //         ? 'https://image.tmdb.org/t/p/w500' + movie.poster_path
-      //         : null,
-      //       description: movie.overview,
-      //     };
-      //   });
-      //   const insert = await this.movieRepository.createMany(moviesList);
-      //   return moviesList;
-      // }
-      // throw new Error('Error while fetching data from movies API');
     } catch (error) {
       throw new RpcException(error?.message ? error.message : error);
     }
