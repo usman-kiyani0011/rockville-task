@@ -14,6 +14,7 @@ export const RMQ_MESSAGES = {
   },
   CATEGORY: {
     CATEGORY_SEEDS: 'category-seeds',
+    CATEGORY_LIST: 'category-list',
   },
   MOVIES: {
     LIST: 'movies-list',

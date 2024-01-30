@@ -8,7 +8,7 @@ import {
 import { MovieService } from '../services/movies.service';
 const {
   MOVIES: { LIST, RECOMMENDED, ADD_RATINGS, SEED },
-  CATEGORY: { CATEGORY_SEEDS },
+  CATEGORY: { CATEGORY_SEEDS, CATEGORY_LIST },
 } = RMQ_MESSAGES;
 
 @Controller()
@@ -38,5 +38,9 @@ export class MoviesController {
   @MessagePattern(CATEGORY_SEEDS)
   seedCategories() {
     return this.movieService.seedCategories();
+  }
+  @MessagePattern(CATEGORY_LIST)
+  listCategories() {
+    return this.movieService.listCategories();
   }
 }

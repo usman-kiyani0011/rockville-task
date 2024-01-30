@@ -10,7 +10,8 @@ import {
   RatingRepository,
   UserRepository,
 } from '@shared';
-import { moviesDataSet } from '../constants/movies-dataset';
+import { join } from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class MovieService {
@@ -32,6 +33,9 @@ export class MovieService {
         }
       );
       if (!categories?.length) throw new Error('Please seeds categories first');
+      const filePath = join(process.cwd(), 'movies-dataset.json');
+      const fileData = fs.readFileSync(filePath, 'utf8');
+      const moviesDataSet = JSON.parse(fileData);
 
       const movies = await this.movieRepository.countDocuments({});
       if (movies > 1) throw new Error('Already Movies Added');
@@ -192,6 +196,13 @@ export class MovieService {
       return await this.categoryRepository.createMany(categoriesData);
     } catch (error) {
       throw new RpcException(error?.message ? error.message : error);
+    }
+  }
+  async listCategories() {
+    try {
+      return this.categoryRepository.find({}, {}, { sort: { createdAt: -1 } });
+    } catch (error) {
+      throw new RpcException(error);
     }
   }
 
