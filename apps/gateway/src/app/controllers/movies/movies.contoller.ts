@@ -34,7 +34,7 @@ export class MoviesController {
 
   @Post(API_ENDPOINTS.MOVIES.SEED)
   @Auth(true)
-  async seedMovieData() {
+  async seedMovies() {
     try {
       const response = await firstValueFrom(
         this.movieServiceClient.send(SEED, {})
@@ -92,12 +92,7 @@ export class MoviesController {
   }
   @Post(API_ENDPOINTS.CATEGORY.SEEDS)
   @Auth(true)
-  async seedCategoryData() {
+  async seedCategories() {
     return this.movieServiceClient.send(CATEGORY_SEEDS, {});
-  }
-  @Get(API_ENDPOINTS.CATEGORY.LIST)
-  @Auth(true)
-  async listCategories() {
-    return this.movieServiceClient.send(CATEGORY_LIST, {});
   }
 }

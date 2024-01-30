@@ -156,13 +156,7 @@ export class MovieService {
       throw new RpcException(error);
     }
   }
-  async fetchCategories() {
-    try {
-      return this.categoryRepository.find({}, {}, { sort: { createdAt: -1 } });
-    } catch (error) {
-      throw new RpcException(error);
-    }
-  }
+  
   async seedCategories() {
     try {
       const categories = await this.categoryRepository.countDocuments();

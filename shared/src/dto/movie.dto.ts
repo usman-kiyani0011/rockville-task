@@ -9,20 +9,9 @@ export class MovieListRequestDto {
   @Transform(toMongoObjectId)
   categoryId: string;
 
-  @ApiProperty({ description: 'Search by title', required: false })
+  @ApiProperty({ description: 'Search by movie title', required: false })
   @IsOptional()
   search: string;
-}
-export class MovieDetailRequestDto {
-  @ApiProperty({ description: 'Movie ID' })
-  @IsMongoId()
-  movieId: string;
-}
-export class MovieDetailQueryRequestDto {
-  @ApiProperty({ description: 'User ID' })
-  @IsMongoId()
-  @IsOptional()
-  userId: string;
 }
 
 export class AddRatingRequestDto {

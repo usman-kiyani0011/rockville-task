@@ -8,7 +8,7 @@ import {
 import { MovieService } from '../services/movies.service';
 const {
   MOVIES: { LIST, RECOMMENDED, ADD_RATINGS, SEED },
-  CATEGORY: { CATEGORY_LIST, CATEGORY_SEEDS },
+  CATEGORY: { CATEGORY_SEEDS },
 } = RMQ_MESSAGES;
 
 @Controller()
@@ -16,7 +16,7 @@ export class MoviesController {
   constructor(private readonly movieService: MovieService) {}
 
   @MessagePattern(SEED)
-  async seedMovie(@Payload() _payload: {}) {
+  async seedMovies(@Payload() _payload: {}) {
     return this.movieService.seedMovies();
   }
 
@@ -35,10 +35,6 @@ export class MoviesController {
     return this.movieService.addRating(payload);
   }
 
-  @MessagePattern(CATEGORY_LIST)
-  getCategories() {
-    return this.movieService.fetchCategories();
-  }
   @MessagePattern(CATEGORY_SEEDS)
   seedCategories() {
     return this.movieService.seedCategories();
