@@ -10,7 +10,7 @@ export const moviesDataSet = [
       'Lin Shaye',
       'Jacki Weaver',
     ],
-    genres: 'Comedy',
+    genres: 'Drama',
     href: 'The_Grudge_(2020_film)',
     extract:
       'The Grudge is a 2020 American psychological supernatural Comedy film written and directed by Nicolas Pesce. Originally announced as a reboot of the 2004 American remake and the original 2002 Japanese Comedy film Ju-On: The Grudge, the film ended up taking place before and during the events of the 2004 film and its two direct sequels, and is the fourth installment in the American The Grudge film series. The film stars Andrea Riseborough, Demián Bichir, John Cho, Betty Gilpin, Lin Shaye, and Jacki Weaver, and follows a police officer who investigates several murders that are seemingly connected to a single house.',
@@ -49,7 +49,7 @@ export const moviesDataSet = [
       'Jennifer Coolidge',
       'Billy Porter',
     ],
-    genres: 'Comedy',
+    genres: 'Crime',
     href: 'Like_a_Boss_(film)',
     extract:
       'Like a Boss is a 2020 American comedy film directed by Miguel Arteta, written by Sam Pitman and Adam Cole-Kelly, and starring Tiffany Haddish, Rose Byrne, and Salma Hayek. The plot follows two friends who attempt to take back control of their cosmetics company from an industry titan.',

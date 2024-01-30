@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { Types } from 'mongoose';
-import { firstValueFrom } from 'rxjs';
-import { HttpService } from '@nestjs/axios';
 import {
   AddRatingRequestDto,
   CategoryRepository,
@@ -12,7 +10,6 @@ import {
   RatingRepository,
   UserRepository,
 } from '@shared';
-import fs from 'fs';
 import { moviesDataSet } from '../constants/movies-dataset';
 
 @Injectable()
@@ -50,7 +47,7 @@ export class MovieService {
         };
       });
 
-      const insert = await this.movieRepository.createMany(moviesList);
+      await this.movieRepository.createMany(moviesList);
 
       return moviesList;
     } catch (error) {
