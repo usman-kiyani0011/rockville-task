@@ -74,9 +74,21 @@ export class MovieService {
   async recommendedMovies(payload: { userId: string; categories: string[] }) {
     const { userId, categories } = payload;
     try {
-      console.log('categories', categories);
-
+      let matchCategories: any = {};
+      if (categories)
+        matchCategories = {
+          $or: [
+            {
+              categoryId: {
+                $in: categories.map((c) => new Types.ObjectId(c)),
+              },
+            },
+          ],
+        };
       const movies = await this.movieRepository.aggregate([
+        {
+          $match: matchCategories,
+        },
         {
           $lookup: {
             from: 'categories',
@@ -96,11 +108,6 @@ export class MovieService {
         {
           $match: {
             'ratings.userId': { $ne: new Types.ObjectId(userId) },
-          },
-        },
-        {
-          $match: {
-            $or: [{ categoryId: { $in: categories } }],
           },
         },
         {
