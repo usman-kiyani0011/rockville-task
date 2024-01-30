@@ -22,7 +22,7 @@ import { Auth } from '../../decorators/auth.decorator';
 import { firstValueFrom } from 'rxjs';
 const {
   MOVIES: { LIST, RECOMMENDED, ADD_RATINGS, SEED },
-  CATEGORY: { CATEGORY_LIST, CATEGORY_SEEDS },
+  CATEGORY: { CATEGORY_SEEDS },
 } = RMQ_MESSAGES;
 @Controller(CONTROLLERS.MOVIES)
 @ApiTags(API_TAGS.MOVIES)

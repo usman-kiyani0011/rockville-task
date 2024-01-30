@@ -10,6 +10,7 @@ import {
   MovieListRequestDto,
   MovieRepository,
   RatingRepository,
+  UserRepository,
 } from '@shared';
 import fs from 'fs';
 import { moviesDataSet } from '../constants/movies-dataset';
@@ -20,7 +21,7 @@ export class MovieService {
     private readonly movieRepository: MovieRepository,
     private readonly ratingRepository: RatingRepository,
     private readonly categoryRepository: CategoryRepository,
-    private readonly httpService: HttpService
+    private readonly userRepository: UserRepository
   ) {}
   async seedMovies() {
     try {
@@ -76,12 +77,9 @@ export class MovieService {
   async recommendedMovies(payload: { userId: string; categories: string[] }) {
     const { userId, categories } = payload;
     try {
+      console.log('categories', categories);
+
       const movies = await this.movieRepository.aggregate([
-        // {
-        //   // $match: {
-        //   //   categoryId: { $in: categories.map((c) => new Types.ObjectId(c)) },
-        //   // },
-        // },
         {
           $lookup: {
             from: 'categories',
@@ -101,6 +99,11 @@ export class MovieService {
         {
           $match: {
             'ratings.userId': { $ne: new Types.ObjectId(userId) },
+          },
+        },
+        {
+          $match: {
+            $or: [{ categoryId: { $in: categories } }],
           },
         },
         {
@@ -145,18 +148,29 @@ export class MovieService {
         movieRating.ratingCount,
         payload.rating
       );
-      await this.movieRepository.findByIdAndUpdate(
+      const movie = await this.movieRepository.findByIdAndUpdate(
         { _id: payload.movieId },
         {
           avgRating: newAverage,
         }
       );
+      console.log('movie', movie);
+      await this.userRepository.findOneAndUpdate(
+        { _id: payload?.userId, categories: { $nin: [movie?.categoryId] } },
+        {
+          $addToSet: {
+            categories: movie?.categoryId,
+          },
+        },
+        false
+      );
+
       return rating;
     } catch (error) {
       throw new RpcException(error);
     }
   }
-  
+
   async seedCategories() {
     try {
       const categories = await this.categoryRepository.countDocuments();

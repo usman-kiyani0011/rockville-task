@@ -194,14 +194,15 @@ export abstract class AbstractRepository<TDocument extends AbstractSchema> {
   }
   async findOneAndUpdate(
     filterQuery: FilterQuery<TDocument>,
-    update: UpdateQuery<TDocument>
+    update: UpdateQuery<TDocument>,
+    notFoundThrowError: boolean = true
   ) {
     const document = await this.model.findOneAndUpdate(filterQuery, update, {
       lean: true,
       new: true,
     });
 
-    if (!document) {
+    if (!document && notFoundThrowError) {
       this.logger.warn(
         `${this.singleName} not found with filterQuery:`,
         filterQuery
