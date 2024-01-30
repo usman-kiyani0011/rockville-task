@@ -158,7 +158,6 @@ export class MovieService {
           avgRating: newAverage,
         }
       );
-      console.log('movie', movie);
       await this.userRepository.findOneAndUpdate(
         { _id: payload?.userId, categories: { $nin: [movie?.categoryId] } },
         {
