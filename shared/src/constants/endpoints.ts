@@ -9,14 +9,14 @@ export const API_ENDPOINTS = {
     UPDATE: 'update-profile',
   },
   MOVIES: {
-    LIST: 'list',
+    LIST: 'list-movies',
     RECOMMENDED: 'recommended',
     ADD_RATING: 'add-rating',
-    SEED: 'seeds',
+    SEED: 'seed-movies',
     DETAIL: 'movie-details',
   },
   CATEGORY: {
-    SEEDS: 'seeds',
-    LIST: 'list',
+    SEEDS: 'seed-categories',
+    LIST: 'list-categores',
   },
 };

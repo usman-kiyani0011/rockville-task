@@ -12,7 +12,7 @@ export class User extends AbstractSchema {
 
   @Prop({ type: String, required: true, unique: true })
   email: string;
-  
+
   @Prop({ type: String, required: true })
   password: string;
 
@@ -22,5 +22,7 @@ export class User extends AbstractSchema {
   @Prop({ type: Date, required: false })
   dob?: string;
 
+  @Prop({ type: [String], required: false })
+  categories?: string[];
 }
 export const UserSchema = SchemaFactory.createForClass(User);

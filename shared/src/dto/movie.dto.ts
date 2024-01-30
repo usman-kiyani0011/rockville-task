@@ -4,10 +4,12 @@ import { IsMongoId, IsNumber, IsOptional, Max, Min } from 'class-validator';
 import { toMongoObjectId } from '@shared';
 
 export class MovieListRequestDto {
-  @ApiProperty({ description: 'Category ID' })
-  @IsMongoId()
+  @ApiProperty({ description: 'Category ID', required: false })
+  @IsOptional()
+  @Transform(toMongoObjectId)
   categoryId: string;
-  @ApiProperty({ description: 'Search by title' })
+
+  @ApiProperty({ description: 'Search by title', required: false })
   @IsOptional()
   search: string;
 }
@@ -24,8 +26,9 @@ export class MovieDetailQueryRequestDto {
 }
 
 export class AddRatingRequestDto {
-  @ApiProperty({ description: 'Movie ID' })
+  @ApiProperty({ description: 'Movie ID', example: '65b8e79661af07e0d23976d6' })
   @Transform(toMongoObjectId)
+  @IsOptional()
   movieId: string;
 
   @ApiProperty({ description: 'Rating', example: 5 })

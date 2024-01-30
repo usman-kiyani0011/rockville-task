@@ -8,7 +8,5 @@ export class Category extends AbstractSchema {
   @Prop({ type: String, required: true })
   name: string;
 
-  @Prop({ type: Number, required: true })
-  genreId: string;
 }
 export const CategorySchema = SchemaFactory.createForClass(Category);

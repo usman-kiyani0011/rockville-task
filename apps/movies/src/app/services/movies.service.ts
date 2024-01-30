@@ -11,6 +11,8 @@ import {
   MovieRepository,
   RatingRepository,
 } from '@shared';
+import fs from 'fs';
+import { moviesDataSet } from '../constants/movies-dataset';
 
 @Injectable()
 export class MovieService {
@@ -28,56 +30,28 @@ export class MovieService {
         {
           sort: { createdAt: -1 },
           limit: 5,
-          notFoundThrowError: false 
+          notFoundThrowError: false,
         }
       );
-      // if (!categories.length)
-      //   throw new Error(
-      //     'No categories found. Please seed some categories first.'
-      //   );
+      if (!categories?.length) throw new Error('Please seeds categories first');
+
       const movies = await this.movieRepository.countDocuments({});
-      if (movies > 10) throw new Error('Already Added some data');
-      const categoriesIds = categories
-        .map(({ genreId }) => {
-          return genreId;
-        })
-        .join('|');
+      if (movies > 1) throw new Error('Already Movies Added');
+      const moviesList = moviesDataSet?.map((movie) => {
+        const categoryId = categories.find(({ _id, name }) =>
+          movie.genres.includes(name)
+        )?._id;
+        return {
+          name: movie?.title,
+          categoryId: categoryId?.toString(),
+          poster: movie.thumbnail,
+          description: movie.extract,
+        };
+      });
 
-      // const { data } = await firstValueFrom(
-      //   this.httpService.get(
-      //     // `${process.env.MOVIES_BASE_URL}?apiKey=${process.env.MOVIES_API_KEY}page=1`
-      //     // 'http://www.omdbapi.com/?apiKey=d156b98&page=1'
-      //     `${process.env.MOVIES_BASE_URL}/?apiKey=${process.env.MOVIES_API_KEY}&s=harry&type=movie`
-      //   )
-      // );
-      // if (data?.Response === 'True') {
-      //   return data;
-      // }
-      const { status, data } = await firstValueFrom(
-        this.httpService.get(
-            `https://api.themoviedb.org/3/discover/movie?with_genres=${categoriesIds}&api_key=5c95c30ba021b6e8b46fbd82e23a346a&with_origin_country=US&page=1`
-        )
-      );
-      // throw new Error('Error while fetching data from movies API');
+      const insert = await this.movieRepository.createMany(moviesList);
 
-      if (status === 200) {
-        const moviesList = data.results.map((movie) => {
-          const categoryId = categories.find(({ genreId }) =>
-            movie.genre_ids.includes(genreId)
-          )?._id;
-          return {
-            name: movie.title,
-            categoryId,
-            poster: movie.poster_path
-              ? 'https://image.tmdb.org/t/p/w500' + movie.poster_path
-              : null,
-            description: movie.overview,
-          };
-        });
-        // const insert = await this.movieRepository.createMany(moviesList);
-        return data;
-      }
-      throw new Error('Error while fetching data from movies API');
+      return moviesList;
     } catch (error) {
       throw new RpcException(error?.message ? error.message : error);
     }
@@ -86,13 +60,15 @@ export class MovieService {
     const { categoryId, search } = payload;
     try {
       let filterQuery = {
-        categoryId,
+        ...(categoryId && { categoryId }),
       };
+
       if (search) filterQuery['name'] = { $regex: new RegExp(search, 'i') };
-      return this.movieRepository.find(filterQuery);
-      // .populate('categoryId')
-      // .sort({ avgRating: -1 })
-      // .lean();
+      return this.movieRepository.find(
+        filterQuery,
+        {},
+        { populate: 'categoryId' }
+      );
     } catch (error) {
       throw new RpcException(error);
     }
@@ -101,11 +77,11 @@ export class MovieService {
     const { userId, categories } = payload;
     try {
       const movies = await this.movieRepository.aggregate([
-        {
-          $match: {
-            categoryId: { $in: categories.map((c) => new Types.ObjectId(c)) },
-          },
-        },
+        // {
+        //   // $match: {
+        //   //   categoryId: { $in: categories.map((c) => new Types.ObjectId(c)) },
+        //   // },
+        // },
         {
           $lookup: {
             from: 'categories',
@@ -190,27 +166,19 @@ export class MovieService {
   async seedCategories() {
     try {
       const categories = await this.categoryRepository.countDocuments();
-      if (categories > 10) throw new Error('Already added some data');
-      const { status, data } = await firstValueFrom(
-        this.httpService.get(
-          `${process.env.MOVIES_BASE_URL}?apiKey=${process.env.MOVIES_API_KEY}`
-        )
-      );
+      if (categories > 0) throw new Error('Already added some data');
 
-      if (status === 200) {
-        const upsert = data.genres.map(({ id, name }) => ({
-          updateOne: {
-            filter: {
-              genreId: id,
-            },
-            update: { $set: { genreId: id, name: name } },
-            upsert: true,
-          },
-        }));
-        // await this.categoryRepository.bulkWrite(upsert);
-        return data.genres;
-      }
-      throw new Error('Error while fetching data from movies API');
+      const categoriesData = [
+        { name: 'Action' },
+        { name: 'Horror' },
+        { name: 'Comedy' },
+        { name: 'Drama' },
+        { name: 'Crime' },
+        { name: 'Mystery' },
+        { name: 'Adventure' },
+        { name: 'Comedy' },
+      ];
+      return await this.categoryRepository.createMany(categoriesData);
     } catch (error) {
       throw new RpcException(error?.message ? error.message : error);
     }
