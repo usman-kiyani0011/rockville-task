@@ -31,7 +31,7 @@ export class MovieService {
           notFoundThrowError: false,
         }
       );
-      if (!categories?.length) return { message: 'Already added some data ' };
+      if (!categories?.length) throw new Error('Enter categories first');
       const filePath = join(process.cwd(), 'movies-dataset.json');
       const fileData = fs.readFileSync(filePath, 'utf8');
       const moviesDataSet = JSON.parse(fileData);
@@ -78,7 +78,7 @@ export class MovieService {
     const { userId, categories } = payload;
     try {
       let matchCategories: any = {};
-      if (categories)
+      if (categories?.length)
         matchCategories = {
           $or: [
             {
