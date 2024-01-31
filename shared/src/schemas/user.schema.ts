@@ -19,6 +19,9 @@ export class User extends AbstractSchema {
   @Prop({ type: String, required: false })
   address?: string;
 
+  @Prop({ type: String, required: false })
+  profileURL?: string;
+
   @Prop({ type: Date, required: false })
   dob?: string;
 

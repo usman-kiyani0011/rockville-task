@@ -33,7 +33,6 @@ export class MoviesController {
   ) {}
 
   @Post(API_ENDPOINTS.MOVIES.SEED)
-  @Auth(true)
   async seedMovies() {
     try {
       const response = await firstValueFrom(
@@ -91,7 +90,6 @@ export class MoviesController {
     }
   }
   @Post(API_ENDPOINTS.CATEGORY.SEEDS)
-  @Auth(true)
   async seedCategories() {
     try {
       const response = await firstValueFrom(

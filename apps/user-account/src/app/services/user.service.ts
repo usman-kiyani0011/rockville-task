@@ -47,14 +47,13 @@ export class UserService {
     const { email, password } = payload;
     try {
       const user = await this.validateUser(email, password);
-      console.log('user', user);
       if (!user) throw new UnauthorizedException('Invalid Credentials');
       const payload = { email: user?.email, sub: user?._id };
 
       return {
         user: user,
-        accessToken: this.jwtService.sign(payload,{
-          secret:process.env.JWT_SECRET
+        accessToken: this.jwtService.sign(payload, {
+          secret: process.env.JWT_SECRET,
         }),
       };
     } catch (error) {
@@ -86,8 +85,8 @@ export class UserService {
   }
   async verifyToken({ token }) {
     try {
-      const verifiedPayload = await this.jwtService.verify(token,{
-        secret:process.env.JWT_SECRET
+      const verifiedPayload = await this.jwtService.verify(token, {
+        secret: process.env.JWT_SECRET,
       });
       if (!verifiedPayload || !verifiedPayload?.sub) {
         throw new UnauthorizedException('Invalid Token');

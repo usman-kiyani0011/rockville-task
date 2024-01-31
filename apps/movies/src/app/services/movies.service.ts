@@ -31,13 +31,13 @@ export class MovieService {
           notFoundThrowError: false,
         }
       );
-      if (!categories?.length) throw new Error('Please seeds categories first');
+      if (!categories?.length) return { message: 'Already added some data ' };
       const filePath = join(process.cwd(), 'movies-dataset.json');
       const fileData = fs.readFileSync(filePath, 'utf8');
       const moviesDataSet = JSON.parse(fileData);
 
       const movies = await this.movieRepository.countDocuments({});
-      if (movies > 1) throw new Error('Already Movies Added');
+      if (movies > 1) return { message: 'Already added some data ' };
       const moviesList = moviesDataSet?.map((movie) => {
         const categoryId = categories.find(({ _id, name }) =>
           movie.genres.includes(name)
@@ -180,7 +180,7 @@ export class MovieService {
   async seedCategories() {
     try {
       const categories = await this.categoryRepository.countDocuments();
-      if (categories > 0) throw new Error('Already added some data');
+      if (categories > 0) return { message: 'Already added some data ' };
 
       const categoriesData = [
         { name: 'Action' },
