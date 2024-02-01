@@ -11,7 +11,7 @@ import {
   UserRepository,
 } from '@shared';
 import { join } from 'path';
-import * as fs from 'fs';
+import { readFile } from 'fs/promises';
 
 @Injectable()
 export class MovieService {
@@ -33,9 +33,8 @@ export class MovieService {
       );
       if (!categories?.length) throw new Error('Enter categories first');
       const filePath = join(process.cwd(), 'movies-dataset.json');
-      const fileData = fs.readFileSync(filePath, 'utf8');
+      const fileData = await readFile(filePath, 'utf8');
       const moviesDataSet = JSON.parse(fileData);
-
       const movies = await this.movieRepository.countDocuments({});
       if (movies > 1) return { message: 'Already added some data ' };
       const moviesList = moviesDataSet?.map((movie) => {

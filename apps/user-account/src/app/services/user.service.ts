@@ -22,7 +22,7 @@ export class UserService {
   ) {}
 
   async signUp(payload: SignUpRequestDto) {
-    const { email, password } = payload;
+    const { email } = payload;
 
     try {
       const findEmail = await this.userRepository.findOne(
@@ -33,12 +33,13 @@ export class UserService {
       if (findEmail) {
         throw new ConflictException('Email already exists');
       }
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await bcrypt.hash(payload.password, 10);
       const user = await this.userRepository.create({
         ...payload,
         password: hashedPassword,
       });
-      return user;
+      const { password, ...restObject } = user;
+      return restObject;
     } catch (error) {
       throw new RpcException(error);
     }
