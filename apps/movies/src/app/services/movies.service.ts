@@ -179,7 +179,7 @@ export class MovieService {
   async seedCategories() {
     try {
       const categories = await this.categoryRepository.countDocuments();
-      if (categories > 0) return { message: 'Already added some data ' };
+      if (categories > 0) throw new Error('Already added some data');
 
       const categoriesData = [
         { name: 'Action' },
