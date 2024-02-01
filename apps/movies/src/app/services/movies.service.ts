@@ -31,12 +31,12 @@ export class MovieService {
           notFoundThrowError: false,
         }
       );
-      if (!categories?.length) throw new RpcException('Enter categories first');
+      if (!categories?.length) throw new Error('Enter categories first');
       const filePath = join(process.cwd(), 'movies-dataset.json');
       const fileData = await readFile(filePath, 'utf8');
       const moviesDataSet = JSON.parse(fileData);
       const movies = await this.movieRepository.countDocuments({});
-      if (movies > 1) throw new ConflictException('Already added some data');
+      if (movies > 1) throw new Error('Already added some data');
       const moviesList = moviesDataSet?.map((movie) => {
         const categoryId = categories.find(({ _id, name }) =>
           movie.genres.includes(name)
